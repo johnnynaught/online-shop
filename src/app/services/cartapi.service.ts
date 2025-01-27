@@ -11,7 +11,15 @@ import { NotificationService } from './notification.service';
 })
 export class CartapiService {
   private cartItem: Product[] = [];
-  constructor(private http: HttpClient, private notificationService : NotificationService) {}
+  private storageKey = 'cartItems';
+  constructor(private http: HttpClient, private notificationService : NotificationService) {
+    /*
+    const storedItems = localStorage.getItem(this.storageKey);
+    if(storedItems){
+      this.cartItem = JSON.parse(storedItems);
+    }
+    */
+  }
 
   fetchProducts() : Observable<Product[]>{
     return this.http.get<Product[]>('https://fakestoreapi.com/products');
@@ -27,9 +35,23 @@ export class CartapiService {
       this.cartItem.push(product);
       this.notificationService.showSuccess(`${product.title} added to the cart`);
     }
+
+    localStorage.setItem('cartItems', JSON.stringify(this.cartItem));
   }
 
   getCartItemCount(): number {
     return this.cartItem.length;
+  }
+
+  getCartItems(): Product[] {
+    return this.cartItem;
+  }
+
+  removeCartItem(product: Product) : void {
+    const index = this.cartItem.findIndex(item => item.id === product.id);
+    if(index > -1){
+      this.cartItem.splice(index, 1);
+      this.notificationService.showSuccess('Item removed from cart');
+    }
   }
 }

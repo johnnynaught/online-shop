@@ -9,12 +9,15 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { provideHttpClient, withFetch } from '@angular/common/http';
+import { CartComponent } from './components/cart/cart.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
-    ProductsComponent
+    ProductsComponent,
+    CartComponent
   ],
   imports: [
     BrowserModule,
