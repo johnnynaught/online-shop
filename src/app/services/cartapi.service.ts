@@ -4,8 +4,6 @@ import { Product } from '../models/Product';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from './notification.service';
 
-
-
 @Injectable({
   providedIn: 'root'
 })
@@ -19,6 +17,7 @@ export class CartapiService {
       this.cartItem = JSON.parse(storedItems);
     }
     */
+    
   }
 
   fetchProducts() : Observable<Product[]>{
@@ -36,7 +35,7 @@ export class CartapiService {
       this.notificationService.showSuccess(`${product.title} added to the cart`);
     }
 
-    localStorage.setItem('cartItems', JSON.stringify(this.cartItem));
+    localStorage.setItem(this.storageKey, JSON.stringify(this.cartItem));
   }
 
   getCartItemCount(): number {
@@ -52,6 +51,7 @@ export class CartapiService {
     if(index > -1){
       this.cartItem.splice(index, 1);
       this.notificationService.showSuccess('Item removed from cart');
+      localStorage.setItem(this.storageKey, JSON.stringify(this.cartItem));
     }
   }
 }
