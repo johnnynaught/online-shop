@@ -1,41 +1,69 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Product } from '../models/Product';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from './notification.service';
+import { ShoppingCartDto } from '../models/ShoppingCart';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CartapiService {
-  private cartItem: Product[] = [];
-  private storageKey = 'cartItems';
-  constructor(private http: HttpClient, private notificationService : NotificationService) {
-    /*
-    const storedItems = localStorage.getItem(this.storageKey);
-    if(storedItems){
-      this.cartItem = JSON.parse(storedItems);
-    }
-    */
-    
+  private cartApiUrl = 'http://localhost:8080/api/carts'; // Backend Cart API URL
+
+  constructor(private http: HttpClient, private notificationService: NotificationService) {}
+
+  // Get all cart items
+  getCartItems(): Observable<ShoppingCartDto[]> {
+    return this.http.get<ShoppingCartDto[]>(`${this.cartApiUrl}`);
   }
 
-
-
-  getCartItemCount(): number {
-    return this.cartItem.length;
+  // Add or update a product in the cart
+  addProductToCart(cartDto: ShoppingCartDto): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.http.post(`${this.cartApiUrl}/add`, cartDto).subscribe({
+        next: () => {
+          this.notificationService.showSuccess(`${cartDto.title} added to the cart.`);
+          observer.next(); // Notify success
+          observer.complete();
+        },
+        error: (err) => {
+          const errorMsg = err.error?.message || `Failed to add ${cartDto.title} to the cart.`;
+          this.notificationService.showError(errorMsg);
+          observer.error(err); // Notify failure
+        },
+      });
+    });
   }
 
-  getCartItems(): Product[] {
-    return this.cartItem;
+  // Remove a product from the cart by productId
+  removeCartItem(productId: number): Observable<void> {
+    return new Observable<void>((observer) => {
+      this.http.delete(`${this.cartApiUrl}/${productId}`).subscribe({
+        next: () => {
+          this.notificationService.showSuccess(`Item removed from the cart.`);
+          observer.next(); // Notify success
+          observer.complete();
+        },
+        error: (err) => {
+          const errorMsg = err.error?.message || `Failed to remove item from the cart.`;
+          this.notificationService.showError(errorMsg);
+          observer.error(err); // Notify failure
+        },
+      });
+    });
   }
 
-  removeCartItem(product: Product) : void {
-    const index = this.cartItem.findIndex(item => item.id === product.id);
-    if(index > -1){
-      this.cartItem.splice(index, 1);
-      this.notificationService.showSuccess('Item removed from cart');
-      localStorage.setItem(this.storageKey, JSON.stringify(this.cartItem));
-    }
+  // Get the total amount in the cart
+  getTotalAmount(): Observable<number> {
+    return this.http.get<number>(`${this.cartApiUrl}/total`);
+  }
+
+  // Get the total count of items in the cart
+  getCartItemCount(): Observable<number> {
+    return this.http.get<number>(`${this.cartApiUrl}/count`);
+  }
+
+  submitOrder(): Observable<void> {
+    return this.http.post<void>(`${this.cartApiUrl}/submit`, {});
   }
 }

@@ -1,16 +1,25 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CartapiService } from '../../services/cartapi.service';
-
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrl: './header.component.css'
+  styleUrls: ['./header.component.css'], // Fixed 'styleUrls' typo
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  cartItemCount: number = 0;
+
   constructor(private cartApi: CartapiService) {}
 
-  getCartItemCount(): number {
-    return this.cartApi.getCartItemCount();
+  ngOnInit(): void {
+    // Fetch the cart item count on initialization
+    this.cartApi.getCartItemCount().subscribe({
+      next: (count) => {
+        this.cartItemCount = count;
+      },
+      error: (err) => {
+        console.error('Error fetching cart item count:', err);
+      },
+    });
   }
 }

@@ -2,30 +2,37 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Product } from '../models/Product';
-import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProductService {
-  private apiUrl = 'http://localhost:8080/api/products'; // Backend URL
-  private cartItem: Product[] = [];
+export class ProductApiService {
+  private productApiUrl = 'http://localhost:8080/api/products'; // Backend API URL for products
 
-  constructor(private http: HttpClient, private notificationService : NotificationService ) {}
+  constructor(private http: HttpClient) {}
 
-  getProducts(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  // Fetch all products
+  getAllProducts(): Observable<Product[]> {
+    return this.http.get<Product[]>(this.productApiUrl);
   }
 
-  addToCart(product: Product): void{
-    const existingProduct = this.cartItem.find((item) => item.id === product.id);
-    if(existingProduct) {
-      existingProduct.quantity += 1;
-      this.notificationService.showSuccess(`${product.title} already in the cart. Quantity Updated to ${existingProduct.quantity}`);
-    } else {  
-      product.quantity = 1;
-      this.cartItem.push(product);
-      this.notificationService.showSuccess(`${product.title} added to the cart`);
-    }
-0  }
+  // Fetch a single product by ID
+  getProductById(productId: number): Observable<Product> {
+    return this.http.get<Product>(`${this.productApiUrl}/${productId}`);
+  }
+
+  // Add a new product (admin feature)
+  addProduct(product: Product): Observable<Product> {
+    return this.http.post<Product>(this.productApiUrl, product);
+  }
+
+  // Update an existing product (admin feature)
+  updateProduct(productId: number, product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.productApiUrl}/${productId}`, product);
+  }
+
+  // Delete a product (admin feature)
+  deleteProduct(productId: number): Observable<void> {
+    return this.http.delete<void>(`${this.productApiUrl}/${productId}`);
+  }
 }
