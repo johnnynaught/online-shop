@@ -20,23 +20,7 @@ export class CartapiService {
     
   }
 
-  fetchProducts() : Observable<Product[]>{
-    return this.http.get<Product[]>('https://fakestoreapi.com/products');
-  }
 
-  addToCart(product: Product): void{
-    const existingProduct = this.cartItem.find((item) => item.id === product.id);
-    if(existingProduct) {
-      existingProduct.quantity += 1;
-      this.notificationService.showSuccess(`${product.title} already in the cart. Quantity Updated to ${existingProduct.quantity}`);
-    } else {  
-      product.quantity = 1;
-      this.cartItem.push(product);
-      this.notificationService.showSuccess(`${product.title} added to the cart`);
-    }
-
-    localStorage.setItem(this.storageKey, JSON.stringify(this.cartItem));
-  }
 
   getCartItemCount(): number {
     return this.cartItem.length;

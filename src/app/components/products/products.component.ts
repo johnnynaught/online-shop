@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { CartapiService } from '../../services/cartapi.service';
 import { Product } from '../../models/Product';
+import { ProductService } from '../../services/productapi.service';
+
 
 @Component({
   selector: 'app-products',
@@ -9,16 +10,16 @@ import { Product } from '../../models/Product';
 })
 export class ProductsComponent {
   productList: Product [] = [];
-  constructor(private cartApi: CartapiService) {}
+  constructor(private productApi: ProductService) {}
 
   ngOnInit(): void {
-    this.cartApi.fetchProducts().subscribe((products) => {
+    this.productApi.getProducts().subscribe((products) => {
       this.productList = products;
     });
   }
 
   addToCart(product: Product): void {
     // console.log('Product added to cart', product);
-    this.cartApi.addToCart(product);
+    this.productApi.addToCart(product);
   }
 }
