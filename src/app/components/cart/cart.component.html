@@ -47,8 +47,11 @@
   </div>
 </div>
 
-<div *ngIf="cartItems.length == 0" class="text-center mt-5">
-  <img src="assets/emptycart.jpg" alt="Empty Cart" class="img-fluid" />
-  <h2>Your cart is empty</h2>
-  <button class="btn btn-primary" routerLink="/products">Continue Shopping</button>
-</div>
+
+<div *ngIf="cartItems.length == 0">
+  <div class = "center">
+      <img src = "assets/emptycart.jpg" 
+      alt = "Empty Cart" class = "img-fluid">
+      <h2>Your cart is empty</h2>
+      <button class = "btn btn-primary" routerLink="/products">Continue Shopping</button>
+  </div>

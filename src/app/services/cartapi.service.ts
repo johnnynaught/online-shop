@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from './notification.service';
 import { ShoppingCartDto } from '../models/ShoppingCart';
@@ -9,8 +9,28 @@ import { ShoppingCartDto } from '../models/ShoppingCart';
 })
 export class CartapiService {
   private cartApiUrl = 'http://localhost:8080/api/carts'; // Backend Cart API URL
+  private cartCount = new BehaviorSubject<number>(0);
 
-  constructor(private http: HttpClient, private notificationService: NotificationService) {}
+  constructor(private http: HttpClient, private notificationService: NotificationService) {
+    this.loadCartItemCount(); // Load initial count when the service starts
+  }
+
+    // Load cart count from backend
+    private loadCartItemCount(): void {
+      this.http.get<number>(`${this.cartApiUrl}/count`).subscribe({
+        next: (count) => {
+          this.cartCount.next(count);
+        },
+        error: (err) => {
+          console.error('Error fetching cart item count:', err);
+        },
+      });
+    }
+  
+    // Get real-time cart count as an observable
+    getCartItemCount(): Observable<number> {
+      return this.cartCount.asObservable();
+    }
 
   // Get all cart items
   getCartItems(): Observable<ShoppingCartDto[]> {
@@ -56,11 +76,6 @@ export class CartapiService {
   // Get the total amount in the cart
   getTotalAmount(): Observable<number> {
     return this.http.get<number>(`${this.cartApiUrl}/total`);
-  }
-
-  // Get the total count of items in the cart
-  getCartItemCount(): Observable<number> {
-    return this.http.get<number>(`${this.cartApiUrl}/count`);
   }
 
 }

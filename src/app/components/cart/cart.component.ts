@@ -33,6 +33,7 @@ export class CartComponent implements OnInit {
     });
   }
 
+
   // Fetch total amount from the backend
   fetchTotalAmount(): void {
     this.cartApi.getTotalAmount().subscribe({

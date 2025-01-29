@@ -1,25 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CartapiService } from '../../services/cartapi.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css'], // Fixed 'styleUrls' typo
+  styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit {
-  cartItemCount: number = 0;
+export class HeaderComponent {
+  cartItemCount$: Observable<number>; // Using an observable for live updates
 
-  constructor(private cartApi: CartapiService) {}
-
-  ngOnInit(): void {
-    // Fetch the cart item count on initialization
-    this.cartApi.getCartItemCount().subscribe({
-      next: (count) => {
-        this.cartItemCount = count;
-      },
-      error: (err) => {
-        console.error('Error fetching cart item count:', err);
-      },
-    });
+  constructor(private cartApi: CartapiService) {
+    this.cartItemCount$ = this.cartApi.getCartItemCount(); // Subscribe once
   }
 }
+
