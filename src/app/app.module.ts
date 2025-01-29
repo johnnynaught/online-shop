@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { CartComponent } from './components/cart/cart.component';
+import { OrderComponent} from './components/order/order.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { CartComponent } from './components/cart/cart.component';
     AppComponent,
     HeaderComponent,
     ProductComponent,
-    CartComponent
+    CartComponent,
+    OrderComponent
   ],
   imports: [
     BrowserModule,

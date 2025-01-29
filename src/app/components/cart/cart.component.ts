@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CartapiService} from '../../services/cartapi.service';
 import { ShoppingCartDto } from '../../models/ShoppingCart';
+import { OrderService } from '../../services/orderapi.service';
+import { OrderDto } from '../../models/Order';
 
 @Component({
   selector: 'app-cart',
@@ -11,7 +13,7 @@ export class CartComponent implements OnInit {
   cartItems: ShoppingCartDto[] = [];
   totalAmount: number = 0;
 
-  constructor(private cartApi: CartapiService) {}
+  constructor(private cartApi: CartapiService, private orderApi: OrderService) {}
 
   ngOnInit(): void {
     // Fetch cart items from the service
@@ -56,16 +58,29 @@ export class CartComponent implements OnInit {
   }
 
 
+  // Submit order
   submitOrder(): void {
-    this.cartApi.submitOrder().subscribe({
-      next: () => {
-        this.cartItems = []; // Clear the cart after successful order
-        this.totalAmount = 0; // Reset the total amount
-        alert('Your order has been successfully submitted!');
+    const order: OrderDto = {
+      userId: 101, // Replace with actual user ID
+      orderTime: new Date().toISOString(),
+      totalPrice: this.totalAmount,
+      items: this.cartItems.map((item) => ({
+        productId: item.productId,
+        quantity: item.quantity,
+        singleProductPrice: item.price,
+      })),
+    };
+
+    this.orderApi.submitOrder(order).subscribe({
+      next: (createdOrder) => {
+        console.log('Order submitted successfully:', createdOrder);
+        alert('Order submitted!');
+        this.cartItems = []; // Clear the cart
+        this.totalAmount = 0; // Reset total amount
       },
       error: (err) => {
-        console.error('Failed to submit the order:', err);
-        alert('There was an error submitting your order. Please try again.');
+        console.error('Failed to submit order:', err);
+        alert('Order submission failed.');
       },
     });
   }

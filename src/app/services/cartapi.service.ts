@@ -63,7 +63,4 @@ export class CartapiService {
     return this.http.get<number>(`${this.cartApiUrl}/count`);
   }
 
-  submitOrder(): Observable<void> {
-    return this.http.post<void>(`${this.cartApiUrl}/submit`, {});
-  }
 }

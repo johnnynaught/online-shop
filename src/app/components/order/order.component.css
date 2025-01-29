@@ -1,0 +1,15 @@
+.apple-btn {
+    background-color: white !important; /* White Background */
+    color: black !important; /* Black Font */
+    border: 1px solid black !important; /* Black Border */
+    padding: 6px 12px;
+    font-weight: bold;
+    border-radius: 8px; /* Rounded Corners */
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .apple-btn:hover {
+    background-color: #f5f5f7 !important; /* Light Gray Apple Hover Effect */
+    color: black !important;
+  }
+  
