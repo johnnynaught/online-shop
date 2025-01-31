@@ -15,22 +15,18 @@ export class CartapiService {
     this.loadCartItemCount(); // Load initial count when the service starts
   }
 
-    // Load cart count from backend
-    private loadCartItemCount(): void {
-      this.http.get<number>(`${this.cartApiUrl}/count`).subscribe({
-        next: (count) => {
-          this.cartCount.next(count);
-        },
-        error: (err) => {
-          console.error('Error fetching cart item count:', err);
-        },
-      });
-    }
-  
-    // Get real-time cart count as an observable
-    getCartItemCount(): Observable<number> {
-      return this.cartCount.asObservable();
-    }
+  // Load initial cart count from backend
+  private loadCartItemCount(): void {
+    this.http.get<number>(`${this.cartApiUrl}/count`).subscribe({
+      next: (count) => this.cartCount.next(count),
+      error: (err) => console.error('Error fetching cart item count:', err),
+    });
+  }
+
+  // Get real-time cart count
+  getCartItemCount(): Observable<number> {
+    return this.cartCount.asObservable();
+  }
 
   // Get all cart items
   getCartItems(): Observable<ShoppingCartDto[]> {

@@ -8,10 +8,9 @@ import { Observable } from 'rxjs';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  cartItemCount$: Observable<number>; // Using an observable for live updates
+  cartItemCount$: Observable<number>; // Use Observable for auto-updates
 
   constructor(private cartApi: CartapiService) {
-    this.cartItemCount$ = this.cartApi.getCartItemCount(); // Subscribe once
+    this.cartItemCount$ = this.cartApi.getCartItemCount(); // Subscribe to updates
   }
 }
-
