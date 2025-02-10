@@ -1,17 +1,14 @@
-# Workflow name
 name: Angular S3 Deployment
 
-# This allows manual start of the pipeline as needed.
 on: workflow_dispatch
 
-# The list of jobs to run 
 jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
     name: Build and Deploy Job
     steps:
 
-      # 1. Configure AWS credentials      
+      # 1. Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -25,13 +22,13 @@ jobs:
         with:
           ref: main
       
-      # 3. Setup Node
-      - name: Setup Node 
+      # 3. Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18.12.0'
           
-      # 4. Setup Cache
+      # 4. Setup Cache for npm
       - name: Setup Cache
         uses: actions/cache@v3
         with:
@@ -40,15 +37,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      # 5. Build Angular
+      # 5. Install Dependencies & Build Angular
       - name: Build Angular Application
         run: |
-          ls
           npm install -g @angular/cli
           npm install
-          ng build
-          
-      # 6. Copy to S3 bucket.
+          ng build --configuration=production
+          ls -la dist/
+
+      # 6. Verify AWS CLI
+      - name: Verify AWS CLI
+        run: aws --version
+
+      # 7. Copy Build Files to S3
       - name: Copy to S3 Bucket
         run: |
-          aws s3 cp ./dist/* s3://daveops.co.in
+          aws s3 cp ./dist/online-shop/ s3://angular-onlineshop --recursive
