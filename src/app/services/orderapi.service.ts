@@ -7,7 +7,7 @@ import { OrderDto } from '../models/Order';
   providedIn: 'root',
 })
 export class OrderService {
-  private orderApiUrl = 'http://localhost:8080/api/orders'; // Backend API URL
+  private orderApiUrl = 'http://54.84.96.95:8080/api/orders'; // Backend API URL
 
   constructor(private http: HttpClient) {}
 
