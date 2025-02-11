@@ -7,7 +7,7 @@ import { Product } from '../models/Product';
   providedIn: 'root',
 })
 export class ProductApiService {
-  private productApiUrl = 'http://54.84.96.95:8080/api/products'; // Backend API URL for products
+  private productApiUrl = 'http://34.232.71.14:8080/api/products'; // Backend API URL for products
 
   constructor(private http: HttpClient) {}
 

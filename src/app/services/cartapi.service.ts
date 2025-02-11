@@ -8,7 +8,7 @@ import { ShoppingCartDto } from '../models/ShoppingCart';
   providedIn: 'root',
 })
 export class CartapiService {
-  private cartApiUrl = 'http://54.84.96.95:8080/api/carts'; // Backend Cart API URL
+  private cartApiUrl = 'http://34.232.71.14:8080/api/carts'; // Backend Cart API URL
   private cartCount = new BehaviorSubject<number>(0);
 
   constructor(private http: HttpClient, private notificationService: NotificationService) {
