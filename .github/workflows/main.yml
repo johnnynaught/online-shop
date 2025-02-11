@@ -1,0 +1,55 @@
+name: Angular S3 Deployment
+
+on: workflow_dispatch
+
+jobs:
+  build_and_deploy_job:
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+
+      # 1. Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          
+      # 2. Checkout Repository
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          ref: master
+      
+      # 3. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.20.0'
+          
+      # 4. Setup Cache for npm
+      - name: Setup Cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # 5. Install Dependencies & Build Angular
+      - name: Build Angular Application
+        run: |
+          npm install -g @angular/cli
+          npm install
+          ng build --configuration=production
+          ls -la dist/
+
+      # 6. Verify AWS CLI
+      - name: Verify AWS CLI
+        run: aws --version
+
+      # 7. Copy Build Files to S3
+      - name: Copy to S3 Bucket
+        run: |
+          aws s3 cp ./dist/online-shop/browser/ s3://angular-onlineshop --recursive
