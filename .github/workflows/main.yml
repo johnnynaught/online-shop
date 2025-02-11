@@ -20,7 +20,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-          ref: master
+          ref: aws
       
       # 3. Setup Node.js
       - name: Setup Node.js
