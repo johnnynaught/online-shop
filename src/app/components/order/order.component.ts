@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
     standalone: false
 })
 export class OrderComponent implements OnInit {
-  orders$: Observable<OrderDto[]>;
+  orders$!: Observable<OrderDto[]>;
   isLoading: boolean = true;
   expandedOrderId: number | null = null;
 

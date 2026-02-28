@@ -1,0 +1,17 @@
+
+<div class="wishlist-container">
+  <h2>My Wishlist</h2>
+  <div *ngIf="wishlist$ | async as wishlist" class="wishlist-items">
+    <div *ngFor="let item of wishlist" class="wishlist-item">
+      <img [src]="item.product.image" [alt]="item.product.name" />
+      <div class="item-details">
+        <h3>{{ item.product.name }}</h3>
+        <p>{{ item.product.price | currency }}</p>
+      </div>
+      <button (click)="removeFromWishlist(item.id)">Remove</button>
+    </div>
+  </div>
+  <div *ngIf="!(wishlist$ | async)?.length">
+    <p>Your wishlist is empty.</p>
+  </div>
+</div>

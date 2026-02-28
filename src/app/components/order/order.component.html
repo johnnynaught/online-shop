@@ -1,7 +1,7 @@
 <div class="orders-container">
   <h2 class="orders-title">Your Orders</h2>
   
-  <div class="orders-table-wrapper" *ngIf="orders.length !== 0 && !isLoading">
+  <div class="orders-table-wrapper" *ngIf="(orders$ | async)?.length !== 0 && !isLoading">
     <table class="orders-table">
       <thead>
         <tr>
@@ -12,7 +12,7 @@
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let order of orders; let i = index">
+        <ng-container *ngFor="let order of (orders$ | async); let i = index">
           <!-- Order Row -->
           <tr [class.expanded]="expandedIndex === i">
             <td>{{ order.id }}</td>
