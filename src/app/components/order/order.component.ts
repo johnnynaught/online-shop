@@ -3,9 +3,10 @@ import { OrderService } from '../../services/orderapi.service';
 import { OrderDto } from '../../models/Order';
 
 @Component({
-  selector: 'app-orders',
-  templateUrl: './order.component.html',
-  styleUrls: ['./order.component.css'],
+    selector: 'app-orders',
+    templateUrl: './order.component.html',
+    styleUrls: ['./order.component.css'],
+    standalone: false
 })
 export class OrderComponent implements OnInit {
   orders: OrderDto[] = []; // Initialize orders as an empty array

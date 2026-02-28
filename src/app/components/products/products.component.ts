@@ -5,9 +5,10 @@ import { CartapiService } from '../../services/cartapi.service';
 import { ShoppingCartDto } from '../../models/ShoppingCart';
 
 @Component({
-  selector: 'app-product',
-  templateUrl: './products.component.html',
-  styleUrls: ['./products.component.css'],
+    selector: 'app-product',
+    templateUrl: './products.component.html',
+    styleUrls: ['./products.component.css'],
+    standalone: false
 })
 export class ProductComponent implements OnInit {
   products: Product[] = [];
