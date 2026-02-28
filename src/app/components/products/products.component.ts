@@ -1,8 +1,10 @@
+
 import { Component, OnInit } from '@angular/core';
 import { Product } from '../../models/Product';
-import { ProductApiService } from '../../services/productapi.service';
-import { CartapiService } from '../../services/cartapi.service';
+import { ProductGraphqlService } from '../../services/product-graphql.service';
 import { ShoppingCartDto } from '../../models/ShoppingCart';
+import { Apollo } from 'apollo-angular';
+import { gql } from 'graphql-tag';
 
 @Component({
     selector: 'app-product',
@@ -12,11 +14,12 @@ import { ShoppingCartDto } from '../../models/ShoppingCart';
 })
 export class ProductComponent implements OnInit {
   products: Product[] = [];
+  filteredProducts: Product[] = [];
   isLoading: boolean = true;
 
   constructor(
-    private productApi: ProductApiService,
-    private cartApi: CartapiService
+    private productGraphqlService: ProductGraphqlService,
+    private apollo: Apollo
   ) {}
 
   ngOnInit(): void {
@@ -25,9 +28,10 @@ export class ProductComponent implements OnInit {
 
   // Fetch all products
   fetchProducts(): void {
-    this.productApi.getAllProducts().subscribe({
+    this.productGraphqlService.getAllProducts().subscribe({
       next: (data) => {
-        this.products = data;
+        this.products = data.data.products;
+        this.filteredProducts = this.products;
         this.isLoading = false;
       },
       error: (error) => {
@@ -49,7 +53,18 @@ export class ProductComponent implements OnInit {
       subtotalPrice: product.price * 1, // Default subtotalPrice (quantity * price)
     };
 
-    this.cartApi.addProductToCart(cartDto).subscribe({
+    this.apollo.mutate({
+      mutation: gql`
+        mutation ($cartDto: ShoppingCartDto!) {
+          addProductToCart(cartDto: $cartDto) {
+            id
+          }
+        }
+      `,
+      variables: {
+        cartDto: cartDto
+      }
+    }).subscribe({
       next: () => {
         console.log(`${product.title} added to the cart.`);
       },
@@ -58,4 +73,11 @@ export class ProductComponent implements OnInit {
       },
     });
   }
+
+  onFilterApplied(filter: { minPrice: number; maxPrice: number }) {
+    this.filteredProducts = this.products.filter(product => {
+      return product.price >= filter.minPrice && product.price <= filter.maxPrice;
+    });
+  }
 }
+

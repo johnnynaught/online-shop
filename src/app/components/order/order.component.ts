@@ -1,6 +1,10 @@
+
 import { Component, OnInit } from '@angular/core';
-import { OrderService } from '../../services/orderapi.service';
 import { OrderDto } from '../../models/Order';
+import { Apollo } from 'apollo-angular';
+import { gql } from 'graphql-tag';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
     selector: 'app-orders',
@@ -9,34 +13,46 @@ import { OrderDto } from '../../models/Order';
     standalone: false
 })
 export class OrderComponent implements OnInit {
-  orders: OrderDto[] = []; // Initialize orders as an empty array
-  isLoading: boolean = true; // Track loading state
-  expandedOrderId: number | null = null; // Track expanded order details
+  orders$: Observable<OrderDto[]>;
+  isLoading: boolean = true;
+  expandedOrderId: number | null = null;
 
-  constructor(private orderApi: OrderService) {}
+  constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
     this.fetchOrders();
   }
 
-  // Fetch all orders from the API
   fetchOrders(): void {
     this.isLoading = true;
-    this.orderApi.getOrders().subscribe({
-      next: (data) => {
-        this.orders = data; // Assign fetched data to orders
+    this.orders$ = this.apollo.watchQuery<any>({
+      query: gql`
+        query {
+          orders {
+            id
+            userId
+            orderTime
+            totalPrice
+            items {
+              productId
+              quantity
+              singleProductPrice
+            }
+          }
+        }
+      `
+    }).valueChanges.pipe(
+      map(result => {
         this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Failed to fetch orders:', err);
-        this.isLoading = false;
-      },
-    });
+        return result.data.orders;
+      })
+    );
   }
   
-  expandedIndex: number = -1;  // Using -1 as initial state since indexes are always >= 0
+  expandedIndex: number = -1;
 
   toggleOrderDetails(index: number): void {
     this.expandedIndex = this.expandedIndex === index ? -1 : index;
   }
 }
+

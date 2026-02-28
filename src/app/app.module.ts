@@ -9,8 +9,9 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { provideHttpClient, withFetch } from '@angular/common/http';
-import { CartComponent } from './components/cart/cart.component';
 import { OrderComponent} from './components/order/order.component';
+import { GraphQLModule } from './graphql.module';
+import { PriceFilterComponent } from './components/price-filter/price-filter.component';
 
 
 @NgModule({
@@ -18,14 +19,15 @@ import { OrderComponent} from './components/order/order.component';
     AppComponent,
     HeaderComponent,
     ProductComponent,
-    CartComponent,
-    OrderComponent
+    OrderComponent,
+    PriceFilterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    GraphQLModule
   ],
   providers: [
     provideClientHydration(),
